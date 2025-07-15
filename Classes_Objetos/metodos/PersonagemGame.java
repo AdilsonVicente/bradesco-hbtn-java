@@ -1,4 +1,4 @@
-package Classes_Objetos.personagem;
+package Classes_Objetos.metodos;
 
 public class PersonagemGame {
     private int saldoAtual = 100;

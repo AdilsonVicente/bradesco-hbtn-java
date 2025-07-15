@@ -1,4 +1,4 @@
-package Classes_Objetos.personagem;
+package Classes_Objetos.metodos;
 
 public class Program {
     public static void main(String[] args) {
