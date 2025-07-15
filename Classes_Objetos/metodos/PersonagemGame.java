@@ -1,20 +1,20 @@
 package Classes_Objetos.metodos;
 
 public class PersonagemGame {
-    private int saldoAtual = 100;
+    private int saudeAtual = 100;
     private String nome;
 
     public void tomarDano(int quantidadeDeDano) {
-        saldoAtual -= quantidadeDeDano;
-        if(saldoAtual < 0) {
-            saldoAtual = 0;
+        saudeAtual -= quantidadeDeDano;
+        if(saudeAtual < 0) {
+            saudeAtual = 0;
         }
     }
 
     public void receberCura(int quantidadeDeCura) {
-        saldoAtual += quantidadeDeCura;
-        if(saldoAtual > 100) {
-            saldoAtual = 100;
+        saudeAtual += quantidadeDeCura;
+        if(saudeAtual > 100) {
+            saudeAtual = 100;
         }
     }
 
@@ -26,11 +26,11 @@ public class PersonagemGame {
         this.nome = nome;
     }
 
-    public int getSaldoAtual() {
-        return saldoAtual;
+    public int getSaudeAtual() {
+        return saudeAtual;
     }
 
-    public void setSaldoAtual(int saldoAtual) {
-        this.saldoAtual = saldoAtual;
+    public void setSaudeAtual(int saudeAtual) {
+        this.saudeAtual = saudeAtual;
     }
 }
