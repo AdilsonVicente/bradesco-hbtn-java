@@ -22,10 +22,6 @@ public class Pedido {
             total += item.getProduto().obterPrecoLiquido() * item.getQuantidade();
         }
 
-        /*if (percentualDesconto > 0) {
-            total -= total * (percentualDesconto / 100.00);
-        }*/
-
         return total;
     }
 
