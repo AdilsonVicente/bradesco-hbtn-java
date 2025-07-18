@@ -1,11 +1,10 @@
 import java.util.Locale;
-import produtos.Livro;
 public class Program {
     public static void main(String[] args) {
         Locale.setDefault(new Locale("pt", "BR"));
-        Livro livro1 = new Livro("Duna", 2017, "Brasil", 56.30, 680, "Frank Herbert", 1);
-        Livro livro2 = new Livro("Um de nos esta mentindo", 2018, "Brasil", 34.93, 384, "Karen Mcmanus", 1);
-        Livro livro3 = new Livro("Mindset Milionario", 2021, "Brasil", 31.70, 272, "José Roberto Marques", 1);
+        produtos.Livro livro1 = new produtos.Livro("Duna", 2017, "Brasil", 56.30, 680, "Frank Herbert", 1);
+        produtos.Livro livro2 = new produtos.Livro("Um de nos esta mentindo", 2018, "Brasil", 34.93, 384, "Karen Mcmanus", 1);
+        produtos.Livro livro3 = new produtos.Livro("Mindset Milionario", 2021, "Brasil", 31.70, 272, "José Roberto Marques", 1);
 
         produtos.Dvd dvd1 = new produtos.Dvd("Anjos da Noite 5 - Guerras de Sangue", 2016, "Estados Unidos", 16.90, "Anna Foerster", "Ação", 91);
         produtos.Dvd dvd2 = new produtos.Dvd("Annabelle 2 - A Criacao do Mal", 2017, "Brasil", 39.90, "Jame Wan e Peter Safran", "Terror", 109);
