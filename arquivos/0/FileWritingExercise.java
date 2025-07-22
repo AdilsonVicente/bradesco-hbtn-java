@@ -13,10 +13,20 @@ public class FileWritingExercise {
         System.out.print("Digite o nome do arquivo (com extensão .txt): ");
         String fileName = scanner.nextLine();
 
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            System.out.println("Digite várias linhas de texto. Para finalizar digite 'sair':");
+            while (true) {
+                String linha = scanner.nextLine();
+                if (linha.equals("sair")) {
+                    break;
+                }
+                writer.write(linha);
+                writer.newLine();
+            }
 
-        // implemente o codigo aqui
-
-
+        } catch (IOException e) {
+            System.out.println("Erro ao escrever no arquivo" + e.getMessage());
+        }
 
 
         scanner.close();
