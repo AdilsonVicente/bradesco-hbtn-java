@@ -50,7 +50,7 @@ public class Estoque {
         try {
             FileReader fileReader = new FileReader(nomeArquivo);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
-            FileWriter fileWriter = new FileWriter("estoque.csv");
+            FileWriter fileWriter = new FileWriter("temp.csv");
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
             String linha;
@@ -72,15 +72,15 @@ public class Estoque {
             bufferedReader.close();
 
             Path nomeArquivoOriginal = Paths.get(nomeArquivo);
-            File novoArquivo = new File("estoque.csv");
+            File novoArquivo = new File("temp.csv");
 
             Files.delete(nomeArquivoOriginal);
             novoArquivo.renameTo(new File(nomeArquivo));
 
 
-        } catch (Exception e) {
+        } catch (IOException e) {
 
-            e.printStackTrace();
+            System.out.println("Erro ao ler o arquivo" + e.getMessage());
         }
 
     }
