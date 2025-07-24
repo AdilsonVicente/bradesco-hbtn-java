@@ -3,23 +3,23 @@ import java.nio.file.*;
 
 public class Estoque {
 
-    private String nomeArquivo;
+    private String arquivo;
 
-    public Estoque(String nomeArquivo) {
-        this.nomeArquivo = nomeArquivo;
+    public Estoque(String arquivo) {
+        this.arquivo = arquivo;
     }
 
     public void adicionarProduto(String nome, int quantidade, double preco) {
 
         try {
-            FileWriter fileWriter = new FileWriter(this.nomeArquivo);
+            FileWriter fileWriter = new FileWriter(arquivo);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(1 + "," + nome + "," + quantidade + "," + preco);
             bufferedWriter.newLine();
             bufferedWriter.close();
         } catch (IOException e) {
 
-            e.printStackTrace();
+            System.out.println("Erro ao ler o arquivo" + e.getMessage());
         }
 
     }
@@ -30,7 +30,7 @@ public class Estoque {
 
     public void exibirEstoque() {
         try {
-            FileReader fileReader = new FileReader(nomeArquivo);
+            FileReader fileReader = new FileReader(arquivo);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String linha;
             while ((linha = bufferedReader.readLine()) != null) {
@@ -38,8 +38,7 @@ public class Estoque {
             }
 
         } catch (IOException e) {
-
-            e.printStackTrace();
+            System.out.println("Erro ao ler o arquivo" + e.getMessage());
         }
 
     }
@@ -48,7 +47,7 @@ public class Estoque {
         String nome;
         double preco;
         try {
-            FileReader fileReader = new FileReader(nomeArquivo);
+            FileReader fileReader = new FileReader(arquivo);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             FileWriter fileWriter = new FileWriter("temp.csv");
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -71,11 +70,11 @@ public class Estoque {
             bufferedWriter.close();
             bufferedReader.close();
 
-            Path nomeArquivoOriginal = Paths.get(nomeArquivo);
+            Path arquivoOriginal = Paths.get(arquivo);
             File novoArquivo = new File("temp.csv");
 
-            Files.delete(nomeArquivoOriginal);
-            novoArquivo.renameTo(new File(nomeArquivo));
+            Files.delete(arquivoOriginal);
+            novoArquivo.renameTo(new File(arquivo));
 
 
         } catch (IOException e) {
