@@ -9,13 +9,8 @@ public class FileReadingExercise {
 
         try ( BufferedReader buffRead = new BufferedReader(new FileReader(fileName));) {
             String linha = "";
-            while (true) {
-                if (linha != null) {
-                    System.out.println(linha);
-
-                } else
-                    break;
-                linha = buffRead.readLine();
+            while ((linha = buffRead.readLine()) != null) {
+                System.out.println(linha);
             }
         } catch (IOException e) {
             System.out.println("Erro ao ler o arquivo" + e.getMessage());
