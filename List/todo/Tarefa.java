@@ -5,7 +5,7 @@ public class Tarefa {
     private boolean estahFeita;
     private int identificador;
 
-    public Tarefa(String descricao, int identificador) throws Exception {
+    public Tarefa(String descricao, int identificador) {
         modificarDescricao(descricao);
         this.identificador = identificador;
     }
@@ -32,9 +32,9 @@ public class Tarefa {
         return this.estahFeita ? "[X]" + format : "[ ]" + format;
     }
 
-    public void modificarDescricao(String novaDescricao) throws Exception {
+    public void modificarDescricao(String novaDescricao) {
         if (Objects.isNull(novaDescricao) || novaDescricao.isEmpty())
-            throw new Exception("Descricao de tarefa invalida");
+            throw new IllegalArgumentException("Descricao de tarefa invalida");
         this.descricao = novaDescricao;
     }
 
