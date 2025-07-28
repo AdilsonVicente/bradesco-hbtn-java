@@ -5,14 +5,17 @@ public class Blog {
     private List<Post> postagens = new ArrayList<>();
 
     public void adicionarPostagem(Post post) {
-        if (postagens.stream().anyMatch(p -> p.getAutor().compareTo(post.getAutor()) == 0 && p.toString().compareTo(post.toString()) == 0))
-            throw new IllegalArgumentException("Postagem jah existente");
+        if (postagens.stream().anyMatch(p -> p.equals(post))) {
+            throw new IllegalArgumentException("Postagem já existente");
+        }
         postagens.add(post);
     }
 
     public Set<Autor> obterTodosAutores() {
-        List<Autor> list = this.postagens.stream().map(Post::getAutor).sorted(Comparator.comparing(Autor::toString)).collect(Collectors.toList());
-        return new HashSet<>(list);
+        return this.postagens.stream()
+                .map(Post::getAutor)
+                .sorted(Comparator.comparing(Autor::toString))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public Map<Categorias, Integer> obterContagemPorCategoria() {
@@ -22,14 +25,17 @@ public class Blog {
                 .sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> entry.getValue().intValue()
+                        entry -> entry.getValue().intValue(),
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
                 ));
     }
 
     public Set<Post> obterPostsPorAutor(Autor autor) {
-        return this.postagens.stream().filter(p -> p.getAutor().equals(autor))
+        return this.postagens.stream()
+                .filter(p -> p.getAutor().equals(autor))
                 .sorted(Comparator.comparing(Post::toString))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public Set<Post> obterPostsPorCategoria(Categorias categoria) {
@@ -40,7 +46,10 @@ public class Blog {
 
     public Map<Categorias, Set<Post>> obterTodosPostsPorCategorias() {
         return this.postagens.stream()
-                .collect(Collectors.groupingBy(Post::getCategoria, Collectors.toSet()));
+                .collect(Collectors.groupingBy(
+                        Post::getCategoria,
+                        Collectors.toCollection(LinkedHashSet::new)
+                ));
     }
 
     public Map<Autor, Set<Post>> obterTodosPostsPorAutor() {
