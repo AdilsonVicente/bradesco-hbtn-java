@@ -47,45 +47,43 @@ public class Estoque {
     }
 
     public void atualizarQuantidade(int idAtualizar, int novaQuantidade) {
-        String nome;
-        double preco;
         try {
-            FileReader fileReader = new FileReader(arquivo);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            FileWriter fileWriter = new FileWriter("temp.csv");
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(arquivo));
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("temp.csv"));
 
             String linha;
             while ((linha = bufferedReader.readLine()) != null) {
                 String[] valor = linha.split(",");
 
-                String idLimpo = valor[0].replace("ID:", "").trim();
-                if (Integer.parseInt(idLimpo) == idAtualizar) {
-                    nome = valor[1];
-                    String precoLimpo = valor[3].replace("Preço:", "").trim();
-                    preco = Double.parseDouble(precoLimpo);
-                    bufferedWriter.write("ID: " + idAtualizar + ", Nome: " + nome + ", Quantidade: " + novaQuantidade + ", Preço: " + preco);
-                    bufferedWriter.newLine();
+                String idStr = valor[0].replace("ID:", "").trim();
+                int id = Integer.parseInt(idStr);
+
+                if (id == idAtualizar) {
+                    String nome = valor[1].replace("Nome:", "").trim();
+                    double preco = Double.parseDouble(valor[3].replace("Preço:", "").trim());
+
+                    bufferedWriter.write("ID: " + id + ", Nome: " + nome + ", Quantidade: " + novaQuantidade + ", Preço: " + preco);
                 } else {
                     bufferedWriter.write(linha);
-                    bufferedWriter.newLine();
                 }
-
+                bufferedWriter.newLine();
             }
-            bufferedWriter.close();
+
             bufferedReader.close();
+            bufferedWriter.close();
 
-            Path arquivoOriginal = Paths.get(arquivo);
-            File novoArquivo = new File("temp.csv");
+            Path caminhoOriginal = Paths.get(arquivo);
+            File arquivoTemp = new File("temp.csv");
 
-            Files.delete(arquivoOriginal);
-            novoArquivo.renameTo(new File(arquivo));
-
+            Files.delete(caminhoOriginal);
+            arquivoTemp.renameTo(new File(arquivo));
 
         } catch (IOException e) {
-
-            System.out.println("Erro ao ler o arquivo" + e.getMessage());
+            System.out.println("Erro ao ler ou salvar o arquivo: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Erro ao converter valores numéricos: " + e.getMessage());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Erro no formato da linha: " + e.getMessage());
         }
-
     }
 }
