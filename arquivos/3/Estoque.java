@@ -62,7 +62,8 @@ public class Estoque {
                 String idLimpo = valor[0].replace("ID:", "").trim();
                 if (Integer.parseInt(idLimpo) == idAtualizar) {
                     nome = valor[1];
-                    preco = Double.parseDouble(valor[3]);
+                    String precoLimpo = valor[3].replace("Preço:", "").trim();
+                    preco = Double.parseDouble(precoLimpo);
                     bufferedWriter.write("ID: " + idAtualizar + ", Nome: " + nome + ", Quantidade: " + novaQuantidade + ", Preço: " + preco);
                     bufferedWriter.newLine();
                 } else {
