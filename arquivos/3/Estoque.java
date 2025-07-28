@@ -11,19 +11,15 @@ public class Estoque {
 
     private int proximoId = 1;
 
+    private int proximoId = 1;
+
     public void adicionarProduto(String nome, int quantidade, double preco) {
-        try {
-            FileWriter fileWriter = new FileWriter(arquivo, true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-            bufferedWriter.write("ID: " + proximoId + ", Nome: " + nome + ", Quantidade: " + quantidade + ", Preço: " + preco);
-            bufferedWriter.newLine();
-            bufferedWriter.close();
-
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo, true))) {
+            writer.write("ID: " + proximoId + ", Nome: " + nome + ", Quantidade: " + quantidade + ", Preço: " + preco);
+            writer.newLine();
             proximoId++;
-
         } catch (IOException e) {
-            System.out.println("Erro ao salvar o produto: " + e.getMessage());
+            System.out.println("Erro ao salvar produto: " + e.getMessage());
         }
     }
 
