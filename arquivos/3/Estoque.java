@@ -11,8 +11,6 @@ public class Estoque {
 
     private int proximoId = 1;
 
-    private int proximoId = 1;
-
     public void adicionarProduto(String nome, int quantidade, double preco) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo, true))) {
             writer.write("ID: " + proximoId + ", Nome: " + nome + ", Quantidade: " + quantidade + ", Preço: " + preco);
