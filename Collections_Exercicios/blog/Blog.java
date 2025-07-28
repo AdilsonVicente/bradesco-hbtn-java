@@ -9,8 +9,9 @@ public class Blog {
     }
 
     public Set<String> obterTodosAutores() {
-        List<String> list = this.postagens.stream().map(Post::getAutor).sorted(Comparator.comparing(s -> s.compareTo(s))).collect(Collectors.toList());
-        return new HashSet<>(list);
+        return this.postagens.stream()
+                .map(Post::getAutor)
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     public Map<String, Integer> obterContagemPorCategoria() {
