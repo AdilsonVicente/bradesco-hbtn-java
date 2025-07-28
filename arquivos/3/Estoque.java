@@ -59,10 +59,11 @@ public class Estoque {
             while ((linha = bufferedReader.readLine()) != null) {
                 String[] valor = linha.split(",");
 
-                if (Integer.parseInt(valor[0].trim()) == idAtualizar) {
+                String idLimpo = valor[0].replace("ID:", "").trim();
+                if (Integer.parseInt(idLimpo) == idAtualizar) {
                     nome = valor[1];
                     preco = Double.parseDouble(valor[3]);
-                    bufferedWriter.write(idAtualizar + "," + nome + ", " + novaQuantidade + "," + preco);
+                    bufferedWriter.write("ID: " + idAtualizar + ", Nome: " + nome + ", Quantidade: " + novaQuantidade + ", Preço: " + preco);
                     bufferedWriter.newLine();
                 } else {
                     bufferedWriter.write(linha);
