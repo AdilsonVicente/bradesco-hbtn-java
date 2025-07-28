@@ -9,19 +9,22 @@ public class Estoque {
         this.arquivo = arquivo;
     }
 
-    public void adicionarProduto(String nome, int quantidade, double preco) {
+    private int proximoId = 1;
 
+    public void adicionarProduto(String nome, int quantidade, double preco) {
         try {
-            FileWriter fileWriter = new FileWriter(arquivo);
+            FileWriter fileWriter = new FileWriter(arquivo, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("ID: " + 1 + ", " + "Nome: " + nome + ", " + "Quantidade: " + quantidade + ", " + "Preço: " + preco);
+
+            bufferedWriter.write("ID: " + proximoId + ", Nome: " + nome + ", Quantidade: " + quantidade + ", Preço: " + preco);
             bufferedWriter.newLine();
             bufferedWriter.close();
+
+            proximoId++;
+
         } catch (IOException e) {
-
-            System.out.println("Erro ao ler o arquivo" + e.getMessage());
+            System.out.println("Erro ao salvar o produto: " + e.getMessage());
         }
-
     }
 
     public void excluirProduto(int idExcluir) {
