@@ -21,7 +21,9 @@ public class Blog {
                 .sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> entry.getValue().intValue()
+                        entry -> entry.getValue().intValue(),
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
                 ));
     }
 }
