@@ -14,7 +14,7 @@ public class Estoque {
         try {
             FileWriter fileWriter = new FileWriter(arquivo);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(1 + "," + nome + "," + quantidade + "," + preco);
+            bufferedWriter.write("ID: " + 1 + ", " + "Nome: " + nome + ", " + "Quantidade: " + quantidade + ", " + "Preço: " + preco);
             bufferedWriter.newLine();
             bufferedWriter.close();
         } catch (IOException e) {
