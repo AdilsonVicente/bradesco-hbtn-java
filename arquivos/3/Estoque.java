@@ -47,15 +47,32 @@ public class Estoque {
     }
 
     public void atualizarQuantidade(int idAtualizar, int novaQuantidade) {
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(arquivo));
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("temp.csv"));
-
+        try (
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(arquivo));
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("temp.csv"))
+        ) {
             String linha;
             while ((linha = bufferedReader.readLine()) != null) {
+                linha = linha.trim();
+
+                // Ignora linhas vazias ou mal formatadas
+                if (linha.isEmpty() || !linha.startsWith("ID:")) {
+                    continue;
+                }
+
                 String[] valor = linha.split(",");
 
+                if (valor.length < 4) {
+                    System.out.println("Linha ignorada (formato inválido): " + linha);
+                    continue;
+                }
+
                 String idStr = valor[0].replace("ID:", "").trim();
+                if (idStr.isEmpty()) {
+                    System.out.println("ID vazio na linha: " + linha);
+                    continue;
+                }
+
                 int id = Integer.parseInt(idStr);
 
                 if (id == idAtualizar) {
@@ -69,9 +86,6 @@ public class Estoque {
                 bufferedWriter.newLine();
             }
 
-            bufferedReader.close();
-            bufferedWriter.close();
-
             Path caminhoOriginal = Paths.get(arquivo);
             File arquivoTemp = new File("temp.csv");
 
@@ -79,11 +93,9 @@ public class Estoque {
             arquivoTemp.renameTo(new File(arquivo));
 
         } catch (IOException e) {
-            System.out.println("Erro ao ler ou salvar o arquivo: " + e.getMessage());
+            System.out.println("Erro de I/O: " + e.getMessage());
         } catch (NumberFormatException e) {
-            System.out.println("Erro ao converter valores numéricos: " + e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Erro no formato da linha: " + e.getMessage());
+            System.out.println("Erro ao converter número: " + e.getMessage());
         }
     }
 }
