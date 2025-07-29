@@ -1,13 +1,20 @@
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.LinkedHashSet;
 
 public class Blog {
     private List<Post> postagens = new ArrayList<>();
 
     public void adicionarPostagem(Post post) {
-        if (postagens.stream().anyMatch(p -> p.equals(post))) {
-            throw new IllegalArgumentException("Postagem já existente");
+        boolean existe = postagens.stream()
+                .anyMatch(p -> p.getAutor().equals(post.getAutor()) &&
+                        p.getTitulo().equals(post.getTitulo()));
+
+        if (existe) {
+            throw new IllegalArgumentException("Postagem jah existente");
         }
+
         postagens.add(post);
     }
 
@@ -19,18 +26,13 @@ public class Blog {
     }
 
     public Map<Categorias, Integer> obterContagemPorCategoria() {
-        return this.postagens.stream()
-                .collect(Collectors.groupingBy(Post::getCategoria, Collectors.counting()))
-                .entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> entry.getValue().intValue(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
+        return postagens.stream()
+                .collect(Collectors.groupingBy(
+                        Post::getCategoria,
+                        LinkedHashMap::new,
+                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)
                 ));
     }
-
     public Set<Post> obterPostsPorAutor(Autor autor) {
         return this.postagens.stream()
                 .filter(p -> p.getAutor().equals(autor))
@@ -39,21 +41,30 @@ public class Blog {
     }
 
     public Set<Post> obterPostsPorCategoria(Categorias categoria) {
-        return this.postagens.stream().filter(p -> p.getCategoria().equals(categoria))
-                .sorted(Comparator.comparing(Post::toString))
-                .collect(Collectors.toSet());
+        return postagens.stream()
+                .filter(p -> p.getCategoria().equals(categoria))
+                .map(Post::getTitulo)
+                .distinct()
+                .map(titulo -> postagens.stream()
+                        .filter(p -> p.getTitulo().equals(titulo))
+                        .findFirst().get())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
-
     public Map<Categorias, Set<Post>> obterTodosPostsPorCategorias() {
-        return this.postagens.stream()
+        return postagens.stream()
                 .collect(Collectors.groupingBy(
                         Post::getCategoria,
-                        Collectors.toCollection(LinkedHashSet::new)
+                        LinkedHashMap::new,
+                        Collectors.mapping(Function.identity(), Collectors.toCollection(LinkedHashSet::new))
                 ));
     }
 
     public Map<Autor, Set<Post>> obterTodosPostsPorAutor() {
-        return this.postagens.stream()
-                .collect(Collectors.groupingBy(Post::getAutor, Collectors.toSet()));
+        return postagens.stream()
+                .collect(Collectors.groupingBy(
+                        Post::getAutor,
+                        LinkedHashMap::new,
+                        Collectors.mapping(Function.identity(), Collectors.toCollection(LinkedHashSet::new))
+                ));
     }
 }

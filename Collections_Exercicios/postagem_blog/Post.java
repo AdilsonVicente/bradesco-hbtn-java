@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Post implements Comparable<Post> {
     private String titulo, corpo;
     private Autor autor;
@@ -13,6 +15,10 @@ public class Post implements Comparable<Post> {
         return autor;
     }
 
+    public String getTitulo() {
+        return titulo;
+    }
+
     public Categorias getCategoria() {
         return categoria;
     }
@@ -25,5 +31,18 @@ public class Post implements Comparable<Post> {
     @Override
     public int compareTo(Post o) {
         return this.titulo.compareTo(o.titulo);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Post other = (Post) obj;
+        return this.autor.equals(other.autor) && this.titulo.equals(other.titulo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(autor, titulo);
     }
 }
