@@ -56,6 +56,7 @@ public class Blog {
 
     public Map<Autor, Set<Post>> obterTodosPostsPorAutor() {
         return postagens.stream()
+                .sorted(Comparator.comparing(p -> p.getAutor().toString()))
                 .collect(Collectors.groupingBy(
                         Post::getAutor,
                         LinkedHashMap::new,
