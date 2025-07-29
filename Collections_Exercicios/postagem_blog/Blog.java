@@ -34,28 +34,23 @@ public class Blog {
                 ));
     }
     public Set<Post> obterPostsPorAutor(Autor autor) {
-        return this.postagens.stream()
+        return postagens.stream()
                 .filter(p -> p.getAutor().equals(autor))
-                .sorted(Comparator.comparing(Post::toString))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     public Set<Post> obterPostsPorCategoria(Categorias categoria) {
         return postagens.stream()
                 .filter(p -> p.getCategoria().equals(categoria))
-                .map(Post::getTitulo)
-                .distinct()
-                .map(titulo -> postagens.stream()
-                        .filter(p -> p.getTitulo().equals(titulo))
-                        .findFirst().get())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toCollection(TreeSet::new));
     }
+
     public Map<Categorias, Set<Post>> obterTodosPostsPorCategorias() {
         return postagens.stream()
                 .collect(Collectors.groupingBy(
                         Post::getCategoria,
                         LinkedHashMap::new,
-                        Collectors.mapping(Function.identity(), Collectors.toCollection(LinkedHashSet::new))
+                        Collectors.toCollection(TreeSet::new)
                 ));
     }
 
@@ -64,7 +59,7 @@ public class Blog {
                 .collect(Collectors.groupingBy(
                         Post::getAutor,
                         LinkedHashMap::new,
-                        Collectors.mapping(Function.identity(), Collectors.toCollection(LinkedHashSet::new))
+                        Collectors.toCollection(TreeSet::new)
                 ));
     }
 }
