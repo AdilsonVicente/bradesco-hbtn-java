@@ -1,95 +1,217 @@
 import java.io.*;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class Estoque {
 
-    private String arquivo;
+    private String nomeArquivo;
 
-    public Estoque(String arquivo) {
-        this.arquivo = arquivo;
+    public Estoque(String nomeArquivo) {
+        this.nomeArquivo = nomeArquivo;
     }
 
-    private int proximoId = 1;
-
     public void adicionarProduto(String nome, int quantidade, double preco) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo, true))) {
-            writer.write("ID: " + proximoId + ", Nome: " + nome + ", Quantidade: " + quantidade + ", Preço: " + preco);
-            writer.newLine();
-            proximoId++;
+
+        Produto produto;
+        try {
+            int linhaAtual = 0;
+
+            FileReader fileReader = new FileReader(nomeArquivo);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            ArrayList<String> arquivoTemporario = new ArrayList<>();
+            String linha;
+            while ((linha = bufferedReader.readLine()) != null) {
+                String[] valor = linha.split(",");
+                produto = new Produto(Integer.parseInt(valor[0]), valor[1], Integer.parseInt(valor[2]), Double.parseDouble(valor[3]));
+                arquivoTemporario.add(produto.toCsv());
+            }
+
+            produto = new Produto(verificarID(), nome, quantidade, preco);
+            arquivoTemporario.add(produto.toCsv());
+
+            Path nomeArquivoOriginal = Paths.get(nomeArquivo);
+            Files.delete(nomeArquivoOriginal);
+
+            FileWriter fileWriter = new FileWriter(this.nomeArquivo);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            for (String linhaConteudo : arquivoTemporario) {
+                if(linhaAtual==0){
+                    bufferedWriter.write(linhaConteudo);
+                    linhaAtual++;
+                }else{
+                    bufferedWriter.newLine();
+                    bufferedWriter.write(linhaConteudo);
+                    linhaAtual++;
+                }
+            }
+
+            bufferedWriter.close();
+
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar produto: " + e.getMessage());
+        }
+
+    }
+
+    public void excluirProduto(int idExcluir) {
+        try {
+            FileReader fileReader = new FileReader(nomeArquivo);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            ArrayList<String> arquivoTemporario = new ArrayList<>();
+            String verificarID = "";
+            String linha;
+            Produto produto;
+            while ((linha = bufferedReader.readLine()) != null) {
+                String[] valor = linha.split(",");
+
+                if (Integer.parseInt(valor[0].trim()) != idExcluir) {
+                    produto = new Produto(Integer.parseInt(valor[0]), valor[1], Integer.parseInt(valor[2]),
+                            Double.parseDouble(valor[3]));
+                    arquivoTemporario.add(produto.toCsv());
+                } else {
+                    verificarID = "encontrado";
+                }
+
+            }
+
+            bufferedReader.close();
+
+            if (verificarID.equals("")) {
+                throw new IOException("ID não encontrado: " + idExcluir);
+            } else {
+
+                Path nomeArquivoOriginal = Paths.get(nomeArquivo);
+                Files.delete(nomeArquivoOriginal);
+                int linhaAtual = 0;
+                FileWriter fileWriter = new FileWriter(this.nomeArquivo);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                for (String linhaConteudo : arquivoTemporario) {
+                    if (linhaAtual == 0) {
+                        bufferedWriter.write(linhaConteudo);
+                        linhaAtual++;
+                    } else {
+                        bufferedWriter.newLine();
+                        bufferedWriter.write(linhaConteudo);
+                        linhaAtual++;
+                    }
+
+                }
+
+                bufferedWriter.close();
+
+            }
+
         } catch (IOException e) {
             System.out.println("Erro ao salvar produto: " + e.getMessage());
         }
     }
 
-    public void excluirProduto(int idExcluir) {
-
-    }
-
     public void exibirEstoque() {
         try {
-            FileReader fileReader = new FileReader(arquivo);
+            FileReader fileReader = new FileReader(nomeArquivo);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String linha;
+            Produto produto;
             while ((linha = bufferedReader.readLine()) != null) {
-                System.out.println(linha);
+                String[] valor = linha.split(",");
+                produto = new Produto(Integer.parseInt(valor[0]), valor[1], Integer.parseInt(valor[2]),
+                        Double.parseDouble(valor[3]));
+                System.out.println(produto.toString());
             }
 
         } catch (IOException e) {
-            System.out.println("Erro ao ler o arquivo" + e.getMessage());
+            System.out.println("Erro ao salvar produto: " + e.getMessage());
         }
 
     }
 
     public void atualizarQuantidade(int idAtualizar, int novaQuantidade) {
-        try (
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(arquivo));
-                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("temp.csv"))
-        ) {
+        String nome;
+        double preco;
+        String verificarID = "";
+        int linhaAtual = 0;
+        try {
+            FileReader fileReader = new FileReader(nomeArquivo);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            ArrayList<String> arquivoTemporario = new ArrayList<>();
+
+            Produto produto;
+
             String linha;
             while ((linha = bufferedReader.readLine()) != null) {
-                linha = linha.trim();
-
-                // Ignora linhas vazias ou mal formatadas
-                if (linha.isEmpty() || !linha.startsWith("ID:")) {
-                    continue;
-                }
-
                 String[] valor = linha.split(",");
 
-                if (valor.length < 4) {
-                    System.out.println("Linha ignorada (formato inválido): " + linha);
-                    continue;
-                }
-
-                String idStr = valor[0].replace("ID:", "").trim();
-                if (idStr.isEmpty()) {
-                    System.out.println("ID vazio na linha: " + linha);
-                    continue;
-                }
-
-                int id = Integer.parseInt(idStr);
-
-                if (id == idAtualizar) {
-                    String nome = valor[1].replace("Nome:", "").trim();
-                    double preco = Double.parseDouble(valor[3].replace("Preço:", "").trim());
-
-                    bufferedWriter.write("ID: " + id + ", Nome: " + nome + ", Quantidade: " + novaQuantidade + ", Preço: " + preco);
+                if (Integer.parseInt(valor[0].trim()) == idAtualizar) {
+                    nome = valor[1];
+                    preco = Double.parseDouble(valor[3]);
+                    produto = new Produto(idAtualizar, nome, novaQuantidade, preco);
+                    arquivoTemporario.add(produto.toCsv());
+                    verificarID = "encontrado";
                 } else {
-                    bufferedWriter.write(linha);
+                    produto = new Produto(Integer.parseInt(valor[0]), valor[1], Integer.parseInt(valor[2]),
+                            Double.parseDouble(valor[3]));
+                    arquivoTemporario.add(produto.toCsv());
                 }
-                bufferedWriter.newLine();
+
+            }
+            bufferedReader.close();
+
+            if (verificarID.equals("")) {
+                throw new IOException("ID não encontrado: " + idAtualizar);
+            } else {
+
+                Path nomeArquivoOriginal = Paths.get(nomeArquivo);
+                Files.delete(nomeArquivoOriginal);
+
+                FileWriter fileWriter = new FileWriter(this.nomeArquivo);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                for (String linhaConteudo : arquivoTemporario) {
+                    if (linhaAtual == 0) {
+                        bufferedWriter.write(linhaConteudo);
+                        linhaAtual++;
+                    } else {
+                        bufferedWriter.newLine();
+                        bufferedWriter.write(linhaConteudo);
+                        linhaAtual++;
+                    }
+                }
+
+                bufferedWriter.close();
             }
 
-            Path caminhoOriginal = Paths.get(arquivo);
-            File arquivoTemp = new File("temp.csv");
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar produto: " + e.getMessage());
+        }
 
-            Files.delete(caminhoOriginal);
-            arquivoTemp.renameTo(new File(arquivo));
+    }
+
+    public int verificarID() {
+        int ultimoID = 0;
+        try {
+            FileReader fileReader = new FileReader(nomeArquivo);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            ArrayList<String> ids = new ArrayList();
+            String linha;
+            while ((linha = bufferedReader.readLine()) != null) {
+                String[] valor = linha.split(",");
+
+                ids.add(valor[0]);
+            }
+            Collections.sort(ids);
+            bufferedReader.close();
+
+
+            if (!ids.isEmpty()) {
+                ultimoID = Integer.parseInt(ids.get(ids.size() - 1)) + 1;
+            }else{
+                ultimoID = 1;
+            }
 
         } catch (IOException e) {
-            System.out.println("Erro de I/O: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.out.println("Erro ao converter número: " + e.getMessage());
+            System.out.println("Erro ao salvar produto: " + e.getMessage());
         }
+        return ultimoID;
     }
 }
