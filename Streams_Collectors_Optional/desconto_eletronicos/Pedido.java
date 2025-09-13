@@ -1,14 +1,17 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pedido {
-    private int codigo;
-    private List<Produto> produtoV1s;
-    private Cliente clienteV1;
 
-    public Pedido(int codigo, List<Produto> produtoV1s, Cliente clienteV1) {
+    private int codigo;
+    private List<Produto> produtos = new ArrayList<>();
+    private Cliente cliente;
+
+
+    public Pedido(int codigo, List<Produto> produtos, Cliente cliente) {
         this.codigo = codigo;
-        this.produtoV1s = produtoV1s;
-        this.clienteV1 = clienteV1;
+        this.produtos = produtos;
+        this.cliente = cliente;
     }
 
     public int getCodigo() {
@@ -20,23 +23,24 @@ public class Pedido {
     }
 
     public List<Produto> getProdutos() {
-        return produtoV1s;
+        return produtos;
     }
 
-    public void setProdutos(List<Produto> produtoV1s) {
-        this.produtoV1s = produtoV1s;
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
     }
 
     public Cliente getCliente() {
-        return clienteV1;
+        return cliente;
     }
 
-    public void setCliente(Cliente clienteV1) {
-        this.clienteV1 = clienteV1;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     @Override
     public String toString() {
-        return String.format("[%d] %s", this.codigo, this.clienteV1.getNome());
+        return "[" + codigo + "] " + cliente.getNome();
     }
+
 }

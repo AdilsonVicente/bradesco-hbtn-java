@@ -1,4 +1,5 @@
 public class Produto {
+
     private int codigo;
     private String nome;
     private CategoriaProduto categoria;
@@ -45,6 +46,7 @@ public class Produto {
 
     @Override
     public String toString() {
-        return String.format("[%d] %s %s R$ %,.2f", this.codigo, this.nome, this.categoria, this.preco);
+        return "[" + codigo + "] " + nome + " " + categoria + " R$ " + String.format("%.2f", preco).replace(".", ",");
     }
+
 }
