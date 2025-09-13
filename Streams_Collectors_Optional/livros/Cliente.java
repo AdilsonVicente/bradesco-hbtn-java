@@ -1,7 +1,9 @@
 public class Cliente {
+
     private int codigo;
     private String nome;
     private boolean premium;
+
 
     public Cliente(int codigo, String nome, boolean premium) {
         this.codigo = codigo;
@@ -32,4 +34,5 @@ public class Cliente {
     public void setPremium(boolean premium) {
         this.premium = premium;
     }
+
 }

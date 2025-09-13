@@ -1,8 +1,10 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pedido {
+
     private int codigo;
-    private List<Produto> produtos;
+    private List<Produto> produtos = new ArrayList<>();
     private Cliente cliente;
 
     public Pedido(int codigo, List<Produto> produtos, Cliente cliente) {
