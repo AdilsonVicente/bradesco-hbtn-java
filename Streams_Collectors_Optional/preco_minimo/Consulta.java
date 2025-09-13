@@ -1,24 +1,41 @@
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Consulta {
-    public static List<Produto> obterLivrosDoPedido(Pedido pedidoV1) {
-        return pedidoV1.getProdutos().stream()
-                .filter(produtoV1 -> produtoV1.getCategoria().equals(CategoriaProduto.LIVRO))
-                .toList();
+
+    public static List<Produto> obterLivrosDoPedido(Pedido pedido) {
+        List<Produto> produtos = pedido.getProdutos().stream()
+                .filter(produto -> produto.getCategoria().name() == CategoriaProduto.LIVRO.toString())
+                .collect(Collectors.toList());
+
+        return produtos;
     }
 
     public static Produto obterProdutoMaiorPreco(List<Produto> produtos) {
-        return produtos.stream()
-                .sorted(Comparator.comparing(Produto::getPreco).reversed())
-                .limit(1)
-                .findFirst()
-                .get();
+
+        Produto produto = produtos.get(0);
+
+        Optional<Produto> produtos2 = produtos.stream()
+                .max(Comparator.comparing(Produto::getPreco));
+
+        if (produtos2.isPresent()) {
+            produto = produtos2.get();
+        }
+
+        return produto;
     }
 
     public static List<Produto> obterProdutosPorPrecoMinimo(List<Produto> produtos, double precoMinimo) {
-        return produtos.stream()
+
+        List<Produto> produtos2 = produtos.stream()
                 .filter(produto -> produto.getPreco() >= precoMinimo)
-                .toList();
+                .collect(Collectors.toList());
+
+        return produtos2;
+
     }
 }
